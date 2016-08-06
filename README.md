@@ -1,6 +1,6 @@
 handbrake_batch.sh sample interaction:
 
-```bash
+```
 jasonwarta:/Volumes/JasonsMedia/Movies $ ~/scripts/handbrake_batch.sh avi . "Dawn of the Dead.avi" "Dead Man's Chest.avi" "Deuce of Spades.avi" 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 *
