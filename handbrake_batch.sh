@@ -38,7 +38,7 @@ else
 		toggle=true
 		sleep 1;
 
-		while ps -p $HBpid > /dev/null
+		while pgrep handbrakecli > /dev/null
 		do
 			# check if tail is running, start if not
 			if $toggle; then
