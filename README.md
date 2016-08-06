@@ -1,6 +1,7 @@
 handbrake_batch.sh sample interaction:
 
-`jasonwarta:/Volumes/JasonsMedia/Movies $ ~/scripts/handbrake_batch.sh avi . "Dawn of the Dead.avi" "Dead Man's Chest.avi" "Deuce of Spades.avi" 
+```bash
+jasonwarta:/Volumes/JasonsMedia/Movies $ ~/scripts/handbrake_batch.sh avi . "Dawn of the Dead.avi" "Dead Man's Chest.avi" "Deuce of Spades.avi" 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 *
 * Input filetype:     avi
@@ -19,4 +20,5 @@ Press ENTER to continue processing or Ctrl+C to quit...
 *   Dawn of the Dead
 *
 * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-Encoding: task 1 of 1, 61.36 % (107.77 fps, avg 118.84 fps, ETA 00h12m49s)`
+Encoding: task 1 of 1, 61.36 % (107.77 fps, avg 118.84 fps, ETA 00h12m49s)
+```
