@@ -13,7 +13,7 @@ else
 	echo "*"
 	echo "* Input filetype:     $filetype"
 	# get and print full output directory
-	cd $outputDir; echo "* Output Directory:   $(pwd)"; cd $currentDirectory
+	cd "$outputDir"; echo "* Output Directory:   $(pwd)"; cd "$currentDirectory"
 	echo "* Number of files:    $(($numOfElems-2))"
 	echo "* Files:"
 	for (( i=2;i<$numOfElems;i++)); do
@@ -34,25 +34,29 @@ else
 		echo "* * * * * * * * * * * * * * * * * * * * * * * * * * * *"
 		handbrakecli -Z "AppleTV 2" -i "${args[$i]}" -o $outputDir/"${args[$i]%.$filetype}.mp4" 1> progress.txt 2> log.txt &
 		
-		HBpid=`pgrep handbrakecli`
 		toggle=true
 		sleep 1;
 
-		while pgrep handbrakecli > /dev/null
+		while pgrep handbrakecli > /dev/null;
 		do
 			# check if tail is running, start if not
 			if $toggle; then
 				tail -f -n 1 progress.txt &
 				toggle=false
 			fi
+			
+			sleep 5;
 
 			# if handbrake has finished running, stop tail
 			if ! pgrep handbrakecli > /dev/null; then
-				kill `pgrep tail`
+				kill `pgrep tail` > /dev/null
 			fi
-			sleep 5;
-		done
+			
+		done;
 		
-		rm progress.txt;
+		# kill `pgrep tail` > /dev/null
+		rm progress.txt > /dev/null;
+		echo "Finished converting ${args[$i]%.$filetype}";
+		
 	done;
 fi
