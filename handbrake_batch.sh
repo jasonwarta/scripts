@@ -49,12 +49,12 @@ else
 
 			# if handbrake has finished running, stop tail
 			if ! pgrep handbrakecli > /dev/null; then
-				kill `pgrep tail` > /dev/null
+				kill `pgrep tail`
+				wait `pgrep tail` 2>/dev/null
 			fi
 			
 		done;
 		
-		# kill `pgrep tail` > /dev/null
 		rm progress.txt > /dev/null;
 		echo "Finished converting ${args[$i]%.$filetype}";
 		
