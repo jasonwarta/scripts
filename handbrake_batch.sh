@@ -49,8 +49,8 @@ else
 
 			# if handbrake has finished running, stop tail
 			if ! pgrep handbrakecli > /dev/null; then
-				kill `pgrep tail`
-				wait `pgrep tail` 2>/dev/null
+				kill $!
+				wait $! 2>/dev/null
 			fi
 			
 		done;
