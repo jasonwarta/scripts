@@ -1,4 +1,20 @@
 #!/bin/bash
+
+rand=$RANDOM$RANDOM
+progress_fname="progress_$rand.txt"
+log_fname="log_$rand.txt"
+HB_PID
+TAIL_PID
+
+function cleanup {
+	kill -15 $HB_PID 2>&1 >/dev/null
+	kill -15 $TAIL_PID 2>&1 >/dev/null
+	rm -f "$progress_fname" "$log_fname" > /dev/null;
+	exit
+}
+
+trap cleanup SIGHUP SIGINT SIGKILL SIGTERM SIGSTOP
+
 args=("$@")
 if [ $# -eq 0 ] || [ $# -eq 1 ] || [ $# -eq 2 ]; then
 	echo "Correct usage:"
@@ -25,9 +41,6 @@ else
 	read -p "Press ENTER to continue processing or Ctrl+C to quit..."
 
 	for (( i=2;i<$numOfElems;i++)); do
-		rand=$RANDOM$RANDOM
-		progress_fname="progress_$rand.txt"
-		log_fname="log_$rand.txt"
 
 		echo "" > "$fname"
 		echo "* * * * * * * * * * * * * * * * * * * * * * * * * * * *"
@@ -41,11 +54,10 @@ else
 		toggle=true
 		sleep 1;
 		HB_PID=$!
-		TAIL_PID=0
 
 		while pgrep handbrakecli > /dev/null;
 		do
-			# check if tail is running, start if not
+			# check if tail has been started, start if not
 			if $toggle; then
 				tail -f -n 1 "$progress_fname" &
 				toggle=false
@@ -53,17 +65,19 @@ else
 				TAIL_PID=$!
 			fi
 			
-			sleep 5;
+			sleep 10;
 
 			# if handbrake has finished running, stop tail
 			if ! pgrep handbrakecli > /dev/null; then
-				kill $TAIL_PID
-				wait $TAIL_PID 2>/dev/null
+				# if ! kill -0 $TAIL_PID; then
+					kill -15 $TAIL_PID 2>/dev/null
+					wait $TAIL_PID 2>/dev/null
+				# fi
 			fi
 			
 		done;
 		
-		rm "$progress_fname" "$log_fname" > /dev/null;
+		rm -f "$progress_fname" "$log_fname" > /dev/null;
 		echo "Finished converting ${args[$i]%.$filetype}";
 		
 	done;
