@@ -25,37 +25,45 @@ else
 	read -p "Press ENTER to continue processing or Ctrl+C to quit..."
 
 	for (( i=2;i<$numOfElems;i++)); do
-		echo "" > progress.txt
+		rand=$RANDOM$RANDOM
+		progress_fname="progress_$rand.txt"
+		log_fname="log_$rand.txt"
+
+		echo "" > "$fname"
 		echo "* * * * * * * * * * * * * * * * * * * * * * * * * * * *"
 		echo "*"
 		echo "* Processing:"
 		echo "*   ${args[$i]%.$filetype}"
 		echo "*"
 		echo "* * * * * * * * * * * * * * * * * * * * * * * * * * * *"
-		handbrakecli -Z "AppleTV 2" -i "${args[$i]}" -o $outputDir/"${args[$i]%.$filetype}.mp4" 1> progress.txt 2> log.txt &
+		handbrakecli -Z "AppleTV 2" -i "${args[$i]}" -o $outputDir/"${args[$i]%.$filetype}.mp4" 1> "$progress_fname" 2> "$log_fname" &
 		
 		toggle=true
 		sleep 1;
+		HB_PID=$!
+		TAIL_PID=0
 
 		while pgrep handbrakecli > /dev/null;
 		do
 			# check if tail is running, start if not
 			if $toggle; then
-				tail -f -n 1 progress.txt &
+				tail -f -n 1 "$progress_fname" &
 				toggle=false
+
+				TAIL_PID=$!
 			fi
 			
 			sleep 5;
 
 			# if handbrake has finished running, stop tail
 			if ! pgrep handbrakecli > /dev/null; then
-				kill $!
-				wait $! 2>/dev/null
+				kill $TAIL_PID
+				wait $TAIL_PID 2>/dev/null
 			fi
 			
 		done;
 		
-		rm progress.txt > /dev/null;
+		rm "$progress_fname" "$log_fname" > /dev/null;
 		echo "Finished converting ${args[$i]%.$filetype}";
 		
 	done;
