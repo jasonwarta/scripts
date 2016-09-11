@@ -69,10 +69,8 @@ else
 
 			# if handbrake has finished running, stop tail
 			if ! pgrep handbrakecli > /dev/null; then
-				# if ! kill -0 $TAIL_PID; then
-					kill -15 $TAIL_PID 2>/dev/null
-					wait $TAIL_PID 2>/dev/null
-				# fi
+				kill -15 $TAIL_PID 2>/dev/null
+				wait $TAIL_PID 2>/dev/null
 			fi
 			
 		done;
