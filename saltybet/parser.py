@@ -8,7 +8,7 @@ class State:
 	DONE=3
 	EOF=4
 
-with open('./db/log') as log:
+with open('./db/glog') as log:
 	state=State.OPEN
 	team1=''
 	team2=''
