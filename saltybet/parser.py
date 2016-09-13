@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 
-from enum import Enum
 from pymongo import MongoClient
 
-class State(Enum):
+class State:
 	OPEN=1
 	WINS=2
 	DONE=3
 	EOF=4
 
-with open('log') as log:
+with open('./db/log') as log:
 	state=State.OPEN
 	team1=''
 	team2=''
