@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
-from enum import Enum
 from pymongo import MongoClient
 import select
 import socket
 import time
 import random
 
-class State(Enum):
+class State:
   OPEN=1
   WINS=2
   DONE=3
