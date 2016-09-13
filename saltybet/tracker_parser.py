@@ -77,16 +77,14 @@ if __name__=='__main__':
                     # parse out player/team names
                     team1=line[(line.find("for ")+4):(line.find(" vs "))]
                     team2=line[(line.find(" vs ")+4):(line.find("! ("))]
-                    # print("Team1: '" + team1 + "', Team2: '" + team2 + "'")                    
 
-                elif state == State.WINS:
+                if state == State.WINS:
                   if "wins" in line:
                     state=State.DONE
                     # parse out winner name
                     winner=line[:line.find(" wins!")]
-                    # print("Winner: '" + winner + "'")                    
 
-                elif state == State.DONE:
+                if state == State.DONE:
                   state=State.OPEN
                   db.names.update(
                       { 'name': team1 },
