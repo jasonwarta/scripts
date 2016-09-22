@@ -1,4 +1,5 @@
-sudo port install 4th
+#!/bin/bash
+
 sudo port install OpenCSG
 sudo port install Xft2
 sudo port install XviD

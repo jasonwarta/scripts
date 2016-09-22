@@ -3,8 +3,8 @@
 rand=$RANDOM$RANDOM
 progress_fname="progress_$rand.txt"
 log_fname="log_$rand.txt"
-HB_PID
-TAIL_PID
+HB_PID=0
+TAIL_PID=0
 
 function cleanup {
 	kill -15 $HB_PID 2>&1 >/dev/null
