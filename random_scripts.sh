@@ -10,3 +10,6 @@ done
 for file in *.jpeg; do
 	convert -strip -interlace Plane -gaussian-blur 0.05 -quality 85% $file "compressed_$file"; 
 done
+
+# beets silent import script
+beet import -q -l /Volumes/JasonsMusic/._data/import_errors.log /Volumes/JasonsMusic/
