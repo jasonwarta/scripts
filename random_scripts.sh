@@ -12,4 +12,4 @@ for file in *.jpeg; do
 done
 
 # beets silent import script
-beet import -q -l /Volumes/JasonsMusic/._data/import_errors.log /Volumes/JasonsMusic/
+beet import -qs -l /Volumes/JasonsMusic/._data/import_errors.log /Volumes/JasonsMusic/
