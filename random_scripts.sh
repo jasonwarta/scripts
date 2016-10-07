@@ -5,6 +5,12 @@ for f in *.jpeg; do
 	mv "$f" "${f/ /_}"; 
 done
 
+# batch rename
+# removes a string from every file in a list using sed
+for file in *; do 
+	mv "$file" "`echo $file | sed 's/.720p.BluRay.x264.ShAaNiG//'`"; 
+done
+
 # batch compress jpeg with imagemagick utilities
 # compresses all jpegs in folder significanly
 for file in *.jpeg; do
