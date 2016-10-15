@@ -8,12 +8,12 @@ tunnel='ssh -D 8080 -f -C -q -N HS -p 22'
 PID=""
 if ! pgrep -f 'ssh -D 8080 -f -C -q -N HS -p 22' 2>&1 > /dev/null; then
 	echo "tunnel wasn't running."
-	echo "starting server"
+	echo "starting tunnel"
 	$tunnel
 	PID=$!
 else
-	echo "server was already running"
-	echo "attaching to server process"
+	echo "tunnel was already running"
+	echo "attaching to tunnel process"
 	PID=$(pgrep -f 'ssh -D 8080 -f -C -q -N HS -p 22')
 fi
 
