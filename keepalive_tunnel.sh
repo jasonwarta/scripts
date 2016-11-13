@@ -2,11 +2,12 @@
 
 # keepalive script for restarting python server when it breaks
 # Usage: place in same dir as server.py and run from there
-
-tunnel='ssh -D 8080 -f -C -q -N HS -p 22'
+loc="$1"
+echo "$loc"
+tunnel="ssh -D 8080 -f -C -q -N $loc -p 22"
 
 PID=""
-if ! pgrep -f 'ssh -D 8080 -f -C -q -N HS -p 22' 2>&1 > /dev/null; then
+if ! pgrep -f "ssh -D 8080 -f -C -q -N $loc -p 22" 2>&1 > /dev/null; then
 	echo "tunnel wasn't running."
 	echo "starting tunnel"
 	$tunnel
@@ -14,7 +15,7 @@ if ! pgrep -f 'ssh -D 8080 -f -C -q -N HS -p 22' 2>&1 > /dev/null; then
 else
 	echo "tunnel was already running"
 	echo "attaching to tunnel process"
-	PID=$(pgrep -f 'ssh -D 8080 -f -C -q -N HS -p 22')
+	PID=$(pgrep -f "ssh -D 8080 -f -C -q -N $loc -p 22")
 fi
 
 
@@ -26,7 +27,7 @@ trap terminate SIGHUP SIGINT SIGKILL SIGTERM SIGSTOP
 
 
 while true; do
-	while pgrep -f 'ssh -D 8080 -f -C -q -N HS -p 22' 2>&1 > /dev/null; do
+	while pgrep -f "ssh -D 8080 -f -C -q -N $loc -p 22" 2>&1 > /dev/null; do
 		sleep 1
 	done
 

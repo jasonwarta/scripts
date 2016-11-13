@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
 # keepalive script for restarting a process when it breaks
-# Usage: pass in a 
+# Usage: pass in a process name
+
+args=("$@")
 
 if [ $# -eq 0 ] || [ $# -gt 1 ]; then
 	echo "Correct usage:"
@@ -18,7 +20,7 @@ else
 	else
 		echo "$process was already running"
 		echo "attaching to $process"
-		PID=$(pgrep -f 'ssh -D 8080 -f -C -q -N HS -p 22')
+		PID=$(pgrep -f '$process')
 	fi
 
 	function terminate {
@@ -29,7 +31,7 @@ else
 
 
 	while true; do
-		while pgrep -f '$process' 2>&1 > /dev/null; do
+		while ps aux|grep -v "grep --color=auto"|grep -v 'keepalive.sh'|grep "$process" > /dev/null; do
 			sleep 1
 		done
 
