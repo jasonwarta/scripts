@@ -19,3 +19,13 @@ done
 
 # beets silent import script
 beet import -qs -l /Volumes/JasonsMusic/._data/import_errors.log /Volumes/JasonsMusic/
+
+# gsed rename
+for file in *; do
+	mv "$file" "`echo "$file" | gsed 's/\b[0-9]\b/0&/'`";
+done
+
+# tv season episode rename
+for file in *.avi; do 
+	echo "`echo "$file"|sed 's/\./ /g'|sed "s/[1-6]/s0&e/"|sed 's/ex/e/'|sed 's/ [Dd][Vv][Dd].*/\.avi/'|sed 's/-/ /g'`";
+done
