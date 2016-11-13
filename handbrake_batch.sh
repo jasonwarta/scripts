@@ -6,6 +6,18 @@ log_fname="log_$rand.txt"
 HB_PID=0
 TAIL_PID=0
 
+confirm () {
+    read -r -p "${1:-Would you like to continue? [y/N]} " response
+    case $response in
+        [yY][eE][sS]|[yY]) 
+            true
+            ;;
+        *)
+            false
+            ;;
+    esac
+}
+
 function cleanup {
 	kill -15 $HB_PID 2>&1 >/dev/null
 	kill -15 $TAIL_PID 2>&1 >/dev/null
@@ -38,7 +50,7 @@ else
 	echo "*"
 	echo "* * * * * * * * * * * * * * * * * * * * * * * * * * * *"
 
-	read -p "Press ENTER to continue processing or Ctrl+C to quit..."
+	confirm &&
 
 	for (( i=2;i<$numOfElems;i++)); do
 
