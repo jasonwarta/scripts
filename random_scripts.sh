@@ -29,3 +29,6 @@ done
 for file in *.avi; do 
 	echo "`echo "$file"|sed 's/\./ /g'|sed "s/[1-6]/s0&e/"|sed 's/ex/e/'|sed 's/ [Dd][Vv][Dd].*/\.avi/'|sed 's/-/ /g'`";
 done
+
+# parse out all words from a directory and put them in a list
+grep -r '' . | sed 's/ /\n/g'| sed -r 's/([A-Z])/\L\1/g'|grep -x -e '[a-z]\{3,8\}' > ../wordlist.txt
