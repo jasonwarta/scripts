@@ -1,9 +1,9 @@
 #!/bin/bash
 
 confirm () {
-    read -r -p "${1:-Are you sure you want to rename the file? [y/N]} " response </dev/tty
+    read -r -p "${1:-Are you sure you want to rename the file? [Y/n]} " response </dev/tty
     case $response in
-        [yY][eE][sS]|[yY]) 
+        [yY][eE][sS]|[yY]|"") 
             true
             ;;
         *)
