@@ -54,7 +54,7 @@ ls {*.mp4,*.mkv,*.avi} 2>/dev/null |
 while read file; do
 
 	if [ -z $title ]; then
-		title="`sed 's/\./ /g; s/\([A-Za-z'\'']*\([ ]*[A-Za-z'\'']\)*\).*/\1/' <<< "$file"`";
+		title="`sed 's/\./ /g; s/\([A-Za-z'\''\-]*\([ ]*[A-Za-z'\''\-]\)*\).*/\1/' <<< "$file"`";
 	fi
 	if [ -z $year ]; then
 		year="`sed 's/.*\([12][0-9]\{3\}\).*/\1/' <<< "$file"`";
