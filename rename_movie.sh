@@ -12,7 +12,7 @@ confirm () {
     esac
 }
 
-ls {*.mp4,*.mkv,*.avi} 2>/dev/null |
+ls {*.mp4,*.mkv,*.avi,*.m4v} 2>/dev/null |
 while read file;do
 	# parse filename
 	parsedName=$(sed 's/\....$//;s/\./ /g;s/\([A-Za-z'\''0-9'-']*\([ ]*[A-Za-z'\''0-9'-']\)*\).*/\1/'<<<$file)

@@ -24,10 +24,10 @@ for i in "$@"; do
 	    series="${i#*=}"
 	    shift # past argument=value
 	    ;;
-	    # -y=*|--year=*)
-	    # year="${i#*=}"
-	    # shift # past argument=value
-	    # ;;
+	    -y)
+	    yes=true
+	    shift # past argument=value
+	    ;;
 	    # -e=*|--extension=*)
 	    # extension="${i#*=}"
 	    # shift # past argument=value
@@ -49,7 +49,7 @@ for i in "$@"; do
 	esac
 done
 
-ls -1 {*.mp4,*.mkv,*.avi} 2>/dev/null |
+ls -1 {*.mp4,*.mkv,*.avi,*.m4v} 2>/dev/null |
 while read file;do
 # for file in "$(ls -1 {*.mp4,*.mkv,*.avi} 2>/dev/null)";do
 	# echo $file
@@ -79,9 +79,13 @@ while read file;do
 		echo "Couldn't find data for $file"
 	else
 		# fname="$series S$(echo $season)E$(echo $episode) $title$ext"
-		fname="$(sed "s/\(S[0-9][0-9]E[0-9][0-9]\).*/\1 $title$ext/"<<<$file)"
+		fname="$(sed "s/\./ /g;s/\(S[0-9][0-9]E[0-9][0-9]\).*/\1 $title$ext/"<<<$file)"
 		echo $fname
-		confirm && mv "$file" "$fname" && echo "renamed \"$file\" to \"$fname\""
+		if [[ $yes = true ]]; then
+			mv "$file" "$fname" && echo "renamed \"$file\" to \"$fname\""
+		else
+			confirm && mv "$file" "$fname" && echo "renamed \"$file\" to \"$fname\""
+		fi
 	fi
 
 done
