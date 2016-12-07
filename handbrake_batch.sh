@@ -28,13 +28,13 @@ function cleanup {
 trap cleanup SIGHUP SIGINT SIGKILL SIGTERM SIGSTOP
 
 args=("$@")
-if [ $# -eq 0 ] || [ $# -eq 1 ] || [ $# -eq 2 ]; then
+if [ $# -eq 0 ] || [ $# -eq 1 ]; then
 	echo "Correct usage:"
-	echo "  scriptname [intput filetype (mkv,avi,wav...)] [output directory] [file list]"
+	echo "  scriptname [output directory] [file list]"
 else
 	numOfElems=${#args[@]}
-	filetype=${args[0]}
-	outputDir=${args[1]}
+	# filetype=${args[0]}
+	outputDir=${args[0]}
 	currentDirectory=`pwd`
 
 	echo "* * * * * * * * * * * * * * * * * * * * * * * * * * * *"
@@ -42,9 +42,9 @@ else
 	echo "* Input filetype:     $filetype"
 	# get and print full output directory
 	cd "$outputDir"; echo "* Output Directory:   $(pwd)"; cd "$currentDirectory"
-	echo "* Number of files:    $(($numOfElems-2))"
+	echo "* Number of files:    $(($numOfElems-1))"
 	echo "* Files:"
-	for (( i=2;i<$numOfElems;i++)); do
+	for (( i=1;i<$numOfElems;i++)); do
 		echo "*   ${args[${i}]}"
 	done
 	echo "*"
@@ -52,17 +52,17 @@ else
 
 	confirm &&
 
-	for (( i=2;i<$numOfElems;i++)); do
+	for (( i=1;i<$numOfElems;i++)); do
 
 		# echo "" > "$fname"
 		echo "* * * * * * * * * * * * * * * * * * * * * * * * * * * *"
 		echo "*"
 		echo "* Processing:"
-		echo "*   ${args[$i]%.$filetype}"
+		echo "*   `sed 's/\....//'<<<${args[$i]}`"
 		echo "*"
 		echo "* * * * * * * * * * * * * * * * * * * * * * * * * * * *"
 		# handbrakecli -e x264  -q 20.0 -r 30 --pfr  -a 1,1 -E ffaac,copy:ac3 -B 160,160 -6 dpl2,none -R Auto,Auto -D 0.0,0.0 --audio-copy-mask aac,ac3,dtshd,dts,mp3 --audio-fallback ffac3 -f mp4 -X 1920 -Y 1080 --decomb=fast --loose-anamorphic --modulus 2 -m --x264-preset medium --h264-profile high --h264-level 4.0 -i "${args[$i]}" -o $outputDir/"${args[$i]%.$filetype}.mp4" 1> "$progress_fname" 2> "$log_fname" &
-		handbrakecli -Z "AppleTV 2" -i "${args[$i]}" -o $outputDir/"${args[$i]%.$filetype}.mp4" 1> "$progress_fname" 2> "$log_fname" &
+		handbrakecli -Z "AppleTV 2" -i "${args[$i]}" -o $outputDir/"`sed 's/\....//'<<<${args[$i]}`.mp4" 1> "$progress_fname" 2> "$log_fname" &
 		
 		toggle=true
 		sleep 1;
