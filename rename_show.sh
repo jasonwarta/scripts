@@ -28,24 +28,6 @@ for i in "$@"; do
 	    yes=true
 	    shift # past argument=value
 	    ;;
-	    # -e=*|--extension=*)
-	    # extension="${i#*=}"
-	    # shift # past argument=value
-	    # ;;
-	 #    -h|--help)
-		# echo "Movie Rename"
-		# echo "usage: movie_rename [options]"
-		# echo
-		# echo "Options:"
-		# echo "  -t=<title>, --title=<title> 			provide a title"
-		# echo "  -y=<year>, --year=<year> 			provide a year"
-		# echo "  -e=<extension>, --extension=<extension>    	provide an extension"
-		# echo "  -h, --help         				display this help"
-		# echo
-		# echo "You will be promted before renaming a file."
-		# exit
-		# shift
-		# ;;
 	esac
 done
 
@@ -58,6 +40,7 @@ while read file;do
 		s/ /+/g;
 		s/\....$//;
 		s/^/t=/;
+		s/\([0-9]\{1,2\}\)x\([0-9][0-9]\)/S0\1E\2/;
 		s/\(E[0-9][0-9]\).*/\1/;
 		s/S\([0-9][0-9]\)/\&season=\1/;
 		s/E\([0-9][0-9]\)/\&episode=\1/;
@@ -65,11 +48,15 @@ while read file;do
 	# echo $url
 	response=`curl -s $url`
 	# echo $response
-	# seriesID=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<$response|grep "seriesID"|sed 's/\"seriesID\":\"//;s/\"//')
-	# seriesQuery=`curl -s "http://omdbapi.com/?i=$seriesID"`
-	# series=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<$seriesQuery|grep "Title"|sed 's/\"Title\":\"//;s/\"//')
+	seriesID=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<$response|grep "seriesID"|sed 's/\"seriesID\":\"//;s/\"//')
+	seriesQuery=`curl -s "http://omdbapi.com/?i=$seriesID"`
+	series=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<$seriesQuery|grep "Title"|sed 's/\"Title\":\"//;s/\"//')
 	title=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<$response|grep "Title"|sed 's/\"Title\":\"//;s/\"//')
 	
+	season=$(sed 's/.*\([0-9]\{1,2\}\)x\([0-9][0-9]\).*/S0\1E\2/;s/.*\(S[0-9][0-9]\).*/\1/'<<<$file)
+	episode=$(sed 's/.*\([0-9]\{1,2\}\)x\([0-9][0-9]\).*/S0\1E\2/;s/.*\(E[0-9][0-9]\).*/\1/'<<<$file)
+	# echo $season
+	# echo $episode
 	# season=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<$response|grep "Season"|sed 's/\"Season\":\"//;s/\"//')
 	# episode=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<$response|grep "Episode"|sed 's/\"Episode\":\"//;s/\"//')
 	
@@ -79,11 +66,12 @@ while read file;do
 		echo "Couldn't find data for $file"
 	else
 		# fname="$series S$(echo $season)E$(echo $episode) $title$ext"
-		fname="$(sed "s/\./ /g;s/\(S[0-9][0-9]E[0-9][0-9]\).*/\1 $title$ext/"<<<$file)"
-		echo $fname
+		# \(S[0-9][0-9]E[0-9][0-9]\)
+		fname="$(sed "s/.*/$series $season$episode $title$ext/"<<<$file)"
 		if [[ $yes = true ]]; then
 			mv "$file" "$fname" && echo "renamed \"$file\" to \"$fname\""
 		else
+			echo $fname
 			confirm && mv "$file" "$fname" && echo "renamed \"$file\" to \"$fname\""
 		fi
 	fi
