@@ -31,7 +31,7 @@ for i in "$@"; do
 	esac
 done
 
-ls -1 {*.mp4,*.mkv,*.avi,*.m4v} 2>/dev/null |
+ls -1 {*.mp4,*.mkv,*.avi,*.m4v,*.srt} 2>/dev/null |
 while read file;do
 # for file in "$(ls -1 {*.mp4,*.mkv,*.avi} 2>/dev/null)";do
 	# echo $file
@@ -39,10 +39,15 @@ while read file;do
 	url="$(sed '
 		s/ /+/g;
 		s/\....$//;
+		s/[{}]//g;
+		s/\[//g;
+		s/\]//g;
 		s/^/t=/;
+		s/s/S/g;
+		s/e/E/g;
 		s/\([0-9]\{1,2\}\)x\([0-9][0-9]\)/S0\1E\2/;
 		s/\(E[0-9][0-9]\).*/\1/;
-		s/S\([0-9][0-9]\)/\&season=\1/;
+		s/S\([0-9]\{1,2\}\)/\&season=\1/;
 		s/E\([0-9][0-9]\)/\&episode=\1/;
 		s,^,http://www.omdbapi.com/?,' <<<$file)"
 	# echo $url
@@ -53,8 +58,8 @@ while read file;do
 	series=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<$seriesQuery|grep "Title"|sed 's/\"Title\":\"//;s/\"//')
 	title=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<$response|grep "Title"|sed 's/\"Title\":\"//;s/\"//')
 	
-	season=$(sed 's/.*\([0-9]\{1,2\}\)x\([0-9][0-9]\).*/S0\1E\2/;s/.*\(S[0-9][0-9]\).*/\1/'<<<$file)
-	episode=$(sed 's/.*\([0-9]\{1,2\}\)x\([0-9][0-9]\).*/S0\1E\2/;s/.*\(E[0-9][0-9]\).*/\1/'<<<$file)
+	season=$(sed 's/s/S/g;s/.*\([0-9]\{1,2\}\)x\([0-9][0-9]\).*/S\1E\2/;s/.*\(S[0-9][0-9]\).*/\1/'<<<$file)
+	episode=$(sed 's/e/E/g;s/.*\([0-9]\{1,2\}\)x\([0-9][0-9]\).*/S\1E\2/;s/.*\(E[0-9][0-9]\).*/\1/'<<<$file)
 	# echo $season
 	# echo $episode
 	# season=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<$response|grep "Season"|sed 's/\"Season\":\"//;s/\"//')
