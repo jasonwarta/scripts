@@ -30,9 +30,14 @@ while read file;do
 	if [ -z "$title" ]; then
 		echo "Couldn't find data for $file"
 	else
-		echo "$file ==> $parsedName"
 		fname="$title ($year)$ext"
-		echo $fname
-		confirm && mv "$file" "$fname" && echo "renamed \"$file\" to \"$fname\""
+
+		if [ "$file" == "$fname" ]; then
+			echo "$file was already named correctly"
+		else
+			echo "$file ==> $parsedName"
+			echo $fname
+			confirm && mv "$file" "$fname" && echo "renamed \"$file\" to \"$fname\""
+		fi
 	fi
 done
