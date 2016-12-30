@@ -7,9 +7,11 @@ else
     volName=`df | grep "$id" |grep -o /Volumes.* | cut -f2- -d'/' | cut -f2- -d'/'`
 fi
 
+fpath="/Users/jasonwarta/vidout/$volName"
+
 if [ -n "$volName" ]; then
-	mkdir /Volumes/JasonsMedia/vidout/"$volName" >/dev/null
-	makemkvcon mkv disc:0 all --minlength 3600 --messages=-stdout --progress=-stdout --cache=512 /Volumes/JasonsMedia/vidout/"$volName"
+	mkdir "$fpath" >/dev/null
+	makemkvcon mkv disc:0 all --minlength 3600 --messages=-stdout --progress=-stdout --cache=512 "$fpath"
 
 	diskutil eject $id
 else
