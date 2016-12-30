@@ -33,7 +33,6 @@ if [ $# -eq 0 ] || [ $# -eq 1 ]; then
 	echo "  scriptname [output directory] [file list]"
 else
 	numOfElems=${#args[@]}
-	# filetype=${args[0]}
 	outputDir=${args[0]}
 	currentDirectory=`pwd`
 
