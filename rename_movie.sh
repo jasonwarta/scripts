@@ -20,9 +20,17 @@ while read file;do
 	url="http://omdbapi.com/?t=$(sed 's/\....$//;s/\./ /g;s/ /+/g'<<<$parsedName)"
 	# get json from url
 	response=`curl -s "$url"`
+	# echo $response
+	valid=$(sed 's/.*"Response":"\(False\)".*/\1/'<<<$response)
+	if [ "$valid" == "False" ]; then
+		echo "Couldn't find data for $file"
+		continue
+	fi
 	# parse out title and year from response
-	title=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<$response|grep "\"Title\":\""|sed 's/\"Title\":\"//;s/\"//')
-	year=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<$response|grep "Year"|sed 's/\"Year\":\"//;s/\"//')
+	# title=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<"$response"|grep "\"Title\":\""|sed 's/\"Title\":\"//;s/\"//')
+	title="$(sed 's/.*"Title":"\(.*\)","Year":.*/\1/'<<<$response)"
+	# year=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<"$response"|grep "Year"|sed 's/\"Year\":\"//;s/\"//')
+	year="$(sed 's/.*","Year":"\([12][0-9]\{3\}\)",".*/\1/'<<<$response)"
 	# get file extension
 	ext=$(sed 's/.*\(\....\)$/\1/'<<<$file)
 	
