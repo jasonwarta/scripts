@@ -18,16 +18,18 @@ else
 		fi
 
 		name="$(mediainfo "${args[${i}]}"|grep -e 'Track name *: '|sed 's/Track name *: //')" 2>/dev/null
-		name="$(sed 's,/,-,'<<<$name)"
+		name="$(sed 's,/,-,g'<<<$name)"
 		# echo "$name"
 		artist="$(mediainfo "${args[${i}]}"|grep -e '^Performer *: '|sed 's/^Performer *: //')" 2>/dev/null
+		artist="$(sed 's,/,-,g'<<<$artist)"
 		# echo "$artist"
 		album="$(mediainfo "${args[${i}]}"|grep -e 'Album *: '|sed 's/Album *: //')" 2>/dev/null
+		album="$(sed 's,/,-,g'<<<$album)"
 		# echo "$album"
 		track="$(mediainfo "${args[${i}]}"|grep -e 'Track name/Position *: '|sed "s,Track name/Position *: ,,")" 2>/dev/null
 		printf -v track "%02d" $track
 		# echo "$track"
-		ext="$(sed 's/.*\(\....$\)/\1/'<<<${args[${i}]})"
+		ext="$(sed 's/.*\(\..\{3,4\}\)$/\1/'<<<${args[${i}]})"
 		# echo "$ext"
 
 		fpath="$artist/$album"
@@ -37,7 +39,7 @@ else
 		# echo "Name: $fname"
 		
 		if [ -z "$name" ];then
-			echo "couldn't get info for $file"
+			echo "couldn't get info for ${args[${i}]}"
 		else
 			mkdir -p "$outputDir/$fpath"
 			mv "${args[${i}]}" "$fname" 2>/dev/null
