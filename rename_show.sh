@@ -49,30 +49,24 @@ while read file;do
 		s/\(E[0-9][0-9]\).*/\1/;
 		s/S\([0-9]\{1,2\}\)/\&season=\1/;
 		s/E\([0-9][0-9]\)/\&episode=\1/;
-		s,^,http://www.omdbapi.com/?,' <<<$file)"
-	# echo $url
+		s,^,http://www.omdbapi.com/?,' <<<"$file")"
 	response=`curl -s $url`
-	# echo $response
-	seriesID=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<$response|grep "seriesID"|sed 's/\"seriesID\":\"//;s/\"//')
+	seriesID=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<"$response"|grep "seriesID"|sed 's/\"seriesID\":\"//;s/\"//')
 	seriesQuery=`curl -s "http://omdbapi.com/?i=$seriesID"`
-	series=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<$seriesQuery|grep "Title"|sed 's/\"Title\":\"//;s/\"//')
-	title=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<$response|grep "Title"|sed 's/\"Title\":\"//;s/\"//')
+	series=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<"$seriesQuery"|grep "Title"|sed 's/\"Title\":\"//;s/\"//')
+	title=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<"$response"|grep "Title"|sed 's/\"Title\":\"//;s/\"//')
 	
-	season=$(sed 's/s/S/g;s/.*\([0-9]\{1,2\}\)x\([0-9][0-9]\).*/S\1E\2/;s/.*\(S[0-9][0-9]\).*/\1/'<<<$file)
-	episode=$(sed 's/e/E/g;s/.*\([0-9]\{1,2\}\)x\([0-9][0-9]\).*/S\1E\2/;s/.*\(E[0-9][0-9]\).*/\1/'<<<$file)
-	# echo $season
-	# echo $episode
-	# season=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<$response|grep "Season"|sed 's/\"Season\":\"//;s/\"//')
-	# episode=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<$response|grep "Episode"|sed 's/\"Episode\":\"//;s/\"//')
+	season=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<"$response"|grep "Season"|sed 's/\"Season\":\"//;s/\"//')
+	episode=$(sed 's/[{}]//g;s/\",\"/\"\n\"/g'<<<"$response"|grep "Episode"|sed 's/\"Episode\":\"//;s/\"//')
+	season=`printf S%02d $season`
+	episode=`printf E%02d $episode`
 	
-	ext=$(sed 's/.*\(\....\)$/\1/'<<<$file)
+	ext=$(sed 's/.*\(\....\)$/\1/'<<<"$file")
 	
 	if [ -z "$title" ]; then
 		echo "Couldn't find data for $file"
 	else
-		# fname="$series S$(echo $season)E$(echo $episode) $title$ext"
-		# \(S[0-9][0-9]E[0-9][0-9]\)
-		fname="$(sed "s/.*/$series $season$episode $title$ext/"<<<$file)"
+		fname="$(sed "s/.*/$series $season$episode $title$ext/"<<<"$file")"
 		if [[ $yes = true ]]; then
 			mv "$file" "$fname" && echo "renamed \"$file\" to \"$fname\""
 		else
