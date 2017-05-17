@@ -46,7 +46,7 @@ def main():
 	files.sort();
 
 	for f in files:
-		print '-----------------------------------------------------------'
+		print ('-----------------------------------------------------------')
 
 		file=f
 		file=file.replace('.',' ')
@@ -56,6 +56,7 @@ def main():
 		file=file.replace('-',' ')
 		file=file.replace('[',' ')
 		file=file.replace(']',' ')
+		file=file.replace(':',' ')
 		file=file[:-4]
 		
 		for w in badwords:
@@ -80,23 +81,23 @@ def main():
 			fname=data['Title']+" ("+data['Year']+")"+f[f.rindex('.'):]
 			fname=fname.replace('/','-')
 			if fname != f:
-				print f+"  -->  "+fname
+				print (f+"  -->  "+fname)
 				if query_yes_no('Rename?','yes'):
 					rename(f,fname)
-					print "Renamed "+f+" to "+fname
+					print ("Renamed "+f+" to "+fname)
 				else:
-					print "Did not rename "+f
+					print ("Did not rename "+f)
 			else:
-				print f+" was already named correctly"
+				print (f+" was already named correctly")
 		else:
-			print "Couldn't get data for "+f
+			print ("Couldn't get data for "+f)
 
 
 if __name__ == '__main__':
 	try:
 		main()
 	except KeyboardInterrupt:
-		print 'Interrupted'
+		print ('Interrupted')
 		try:
 			exit(0)
 		except SystemExit:
